@@ -5,10 +5,32 @@
     <welcome-file>Sticky.html</welcome-file>
   </welcome-file-list>
 
+  <context-param>
+    <param-name>maxSize</param-name>
+    <!-- <param-value>3145728</param-value> -->
+    <param-value>1024000</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>slowUploads</param-name>
+    <param-value>true</param-value>
+  </context-param>
+
+  <servlet>
+    <servlet-name>uploadServlet</servlet-name>
+<!--    <servlet-class>gwtupload.server.UploadServlet</servlet-class>-->
+     <servlet-class>com.google.appengine.demos.sticky.server.AppEngineUploadServlet</servlet-class> 
+  </servlet>
+
   <servlet>
     <servlet-name>service</servlet-name>
     <servlet-class>com.google.appengine.demos.sticky.server.ServiceImpl</servlet-class>
   </servlet>
+
+  <servlet-mapping>
+    <servlet-name>uploadServlet</servlet-name>
+    <url-pattern>*.gupld</url-pattern>
+  </servlet-mapping>
 
   <servlet-mapping>
     <servlet-name>service</servlet-name>

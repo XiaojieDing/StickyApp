@@ -11,4 +11,6 @@
     <!-- deserialize incoming requests.                                     -->
     <include path="**/*.gwt.rpc" />
   </resource-files>
+  
+  <sessions-enabled>true</sessions-enabled>
 </appengine-web-app>
