@@ -28,6 +28,11 @@ import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.EventTarget;
 import com.google.gwt.dom.client.Style;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.dom.client.MouseDownEvent;
 import com.google.gwt.event.dom.client.MouseDownHandler;
 import com.google.gwt.event.dom.client.MouseMoveEvent;
@@ -38,8 +43,10 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.WidgetCollection;
 
 /**
@@ -59,15 +66,13 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
         private final TextArea content = new TextArea();
 
+        private final TextArea comments = new TextArea();
+
         // Dragging state.
         private boolean dragging;
 
         private int dragOffsetX, dragOffsetY;
 
-        /**
-         * @param note
-         *            the note to render
-         */
         public NoteView(Note note) {
             this.note = note;
             setStyleName("note");
@@ -82,6 +87,16 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
             content.setStyleName("note-content");
             content.addValueChangeHandler(this);
             add(content);
+
+            comments.addValueChangeHandler(new ValueChangeHandler<String>() {
+
+                @Override
+                public void onValueChange(ValueChangeEvent<String> event) {
+                    model.updateComments(NoteView.this.note, event.getValue());
+                    render();
+                }
+
+            });
 
             final FlowPanel panelImages = new FlowPanel();
             final OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler() {
@@ -102,10 +117,47 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
             SingleUploader uploader = new SingleUploader();
             uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
-            add(uploader);
+
+            if (note.getAuthorName().equals("You")) {
+                add(uploader);
+            }
 
             add(panelImages);
 
+            final Button sendButton = new Button("Comment");
+            final TextBox nameField = new TextBox();
+
+            class MyHandler implements ClickHandler, KeyUpHandler {
+                @Override
+                public void onClick(ClickEvent event) {
+                    sendNameToServer();
+                }
+
+                @Override
+                public void onKeyUp(KeyUpEvent event) {
+                    if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+                        sendNameToServer();
+                    }
+                }
+
+                private void sendNameToServer() {
+                    sendButton.setEnabled(false);
+                    // comments.setText(nameField.getText());
+                    comments.setValue(nameField.getText(), true);
+                    sendButton.setEnabled(true);
+                    nameField.setText("");
+                }
+            }
+            MyHandler handler = new MyHandler();
+            sendButton.addClickHandler(handler);
+            nameField.addKeyUpHandler(handler);
+
+            if (!note.getAuthorName().equals("You")) {
+                add(nameField);
+                add(sendButton);
+            }
+
+            add(comments);
             render();
 
             addDomHandler(this, MouseDownEvent.getType());
@@ -184,6 +236,10 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
             final String noteContent = note.getContent();
             content.setText((noteContent == null) ? "" : noteContent);
+
+            final String noteComments = note.getComment();
+            System.out.println("****** " + noteComments);
+            comments.setText((noteComments == null) ? "" : noteComments);
 
             content.setReadOnly(!note.isOwnedByCurrentUser());
         }

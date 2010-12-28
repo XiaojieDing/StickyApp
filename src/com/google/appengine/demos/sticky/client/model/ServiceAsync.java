@@ -21,81 +21,76 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * The asynchronous interface for calls to {@link Service}.
- *
- *
+ * 
+ * 
  */
 public interface ServiceAsync {
 
-  /**
-   * @see Service#addAuthorToSurface(String, String)
-   * @param surfaceKey
-   * @param email
-   * @param callback
-   */
-  void addAuthorToSurface(String surfaceKey, String email,
-      AsyncCallback<Service.AddAuthorToSurfaceResult> callback);
+    /**
+     * @see Service#addAuthorToSurface(String, String)
+     * @param surfaceKey
+     * @param email
+     * @param callback
+     */
+    void addAuthorToSurface(String surfaceKey, String email, AsyncCallback<Service.AddAuthorToSurfaceResult> callback);
 
-  /**
-   * @see Service#changeNoteContent(String, String)
-   * @param noteKey
-   * @param content
-   * @param callback
-   */
-  void changeNoteContent(String noteKey, String content,
-      AsyncCallback<Date> callback);
+    /**
+     * @see Service#changeNoteContent(String, String)
+     * @param noteKey
+     * @param content
+     * @param callback
+     */
+    void changeNoteContent(String noteKey, String content, AsyncCallback<Date> callback);
 
-  /**
-   * @see Service#changeNotePosition(String, int, int, int, int)
-   * @param noteKey
-   * @param x
-   * @param y
-   * @param width
-   * @param height
-   * @param callback
-   */
-  void changeNotePosition(String noteKey, int x, int y, int width, int height,
-      AsyncCallback<Date> callback);
+    /**
+     * @see Service#changeNotePosition(String, int, int, int, int)
+     * @param noteKey
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param callback
+     */
+    void changeNotePosition(String noteKey, int x, int y, int width, int height, AsyncCallback<Date> callback);
 
-  /**
-   * @see Service#createNote(user, int, int, int, int)
-   * @param surfaceKey
-   * @param x
-   * @param y
-   * @param width
-   * @param height
-   * @param callback
-   */
-  void createNote(String surfaceKey, int x, int y, int width, int height,
-      AsyncCallback<Service.CreateObjectResult> callback);
+    /**
+     * @see Service#createNote(user, int, int, int, int)
+     * @param surfaceKey
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param callback
+     */
+    void createNote(String surfaceKey, int x, int y, int width, int height, AsyncCallback<Service.CreateObjectResult> callback);
 
-  /**
-   * @see Service#createSurface(String)
-   * @param title
-   * @param callback
-   */
-  void createSurface(String title,
-      AsyncCallback<Service.CreateObjectResult> callback);
+    /**
+     * @see Service#createSurface(String)
+     * @param title
+     * @param callback
+     */
+    void createSurface(String title, AsyncCallback<Service.CreateObjectResult> callback);
 
-  /**
-   * @see Service#getNotes(String, String)
-   * @param surfaceKey
-   * @param timestamp
-   * @param callback
-   */
-  void getNotes(String surfaceKey, String timestamp,
-      AsyncCallback<Service.GetNotesResult> callback);
+    /**
+     * @see Service#getNotes(String, String)
+     * @param surfaceKey
+     * @param timestamp
+     * @param callback
+     */
+    void getNotes(String surfaceKey, String timestamp, AsyncCallback<Service.GetNotesResult> callback);
 
-  /**
-   * @see Service#getSurfaces(String)
-   * @param timestamp
-   * @param callback
-   */
-  void getSurfaces(String timestamp,
-      AsyncCallback<Service.GetSurfacesResult> callback);
+    /**
+     * @see Service#getSurfaces(String)
+     * @param timestamp
+     * @param callback
+     */
+    void getSurfaces(String timestamp, AsyncCallback<Service.GetSurfacesResult> callback);
 
-  /**
-   * @see Service#getUserInfo()
-   * @param callback
-   */
-  void getUserInfo(AsyncCallback<Service.UserInfoResult> callback);
+    /**
+     * @see Service#getUserInfo()
+     * @param callback
+     */
+    void getUserInfo(AsyncCallback<Service.UserInfoResult> callback);
+
+    void changeComments(String key, String comment, AsyncCallback<Date> callback);
 }
