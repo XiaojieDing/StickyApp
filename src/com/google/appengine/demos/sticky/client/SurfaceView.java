@@ -142,7 +142,6 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
                 private void sendNameToServer() {
                     sendButton.setEnabled(false);
-                    // comments.setText(nameField.getText());
                     comments.setValue(nameField.getText(), true);
                     sendButton.setEnabled(true);
                     nameField.setText("");
