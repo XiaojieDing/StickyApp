@@ -62,6 +62,37 @@ public class Model {
         }
     }
 
+    private class GetImageUrlTask extends Task implements AsyncCallback<String> {
+
+        private final Note note;
+
+        public GetImageUrlTask(Note note) {
+            this.note = note;
+        }
+
+        @Override
+        public void onFailure(Throwable caught) {
+            System.out.println("=== GetImageUrlTask === : onFailure");
+            caught.printStackTrace();
+            getQueue().taskFailed(this, caught instanceof Service.ImageNotFoundException);
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            System.out.println("=== GetImageUrlTask === : " + result);
+            note.setImageUrl(result);
+            note.setHasImage(true);
+            note.update(note);
+            getQueue().taskSucceeded(this);
+        }
+
+        @Override
+        void execute() {
+            api.getImageUrl(note.getKey(), this);
+        }
+
+    }
+
     /**
      * An observer interface to deliver all data change events.
      */
@@ -485,8 +516,8 @@ public class Model {
     }
 
     native static void forceApplicationReload() /*-{
-                                                $wnd.location.reload();
-                                                }-*/;
+        $wnd.location.reload();
+    }-*/;
 
     /**
      * An rpc proxy for making calls to the server.
@@ -742,5 +773,9 @@ public class Model {
 
     public void updateComments(final Note note, String comment) {
         taskQueue.post(new UpdateCommentsTask(note, comment));
+    }
+
+    public void getImageUrlForNote(Note note) {
+        taskQueue.post(new GetImageUrlTask(note));
     }
 }

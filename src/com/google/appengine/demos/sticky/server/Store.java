@@ -31,6 +31,7 @@ import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
+import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
@@ -336,6 +337,12 @@ public class Store {
         @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
         private Key key;
 
+        @Persistent
+        private Blob imageData;
+
+        @Persistent
+        private String contentType;
+
         public String getComment() {
             return comment;
         }
@@ -562,6 +569,23 @@ public class Store {
         public void setY(int y) {
             this.y = y;
         }
+
+        public void setImageData(Blob imageData) {
+            this.imageData = imageData;
+        }
+
+        public Blob getImageData() {
+            return imageData;
+        }
+
+        public void setContentType(String contentType) {
+            this.contentType = contentType;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
     }
 
     /**

@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.jdo.Transaction;
+import javax.servlet.http.HttpServletRequest;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -42,6 +43,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 @SuppressWarnings("serial")
 public class ServiceImpl extends RemoteServiceServlet implements Service {
 
+    private static String FETCH_SERVLET = "/sticky/imageFetch/";
     private static final int TIMESTAMP_PADDING = 1000 * 60;
 
     private static Date convertTimestampToDate(String timetamp) {
@@ -119,7 +121,7 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
     /**
      * A reference to the data store.
      */
-    private final Store store = new Store("transactions-optional");
+    public final static Store store = new Store("transactions-optional");
 
     /**
      * A reference to a cache service.
@@ -411,5 +413,15 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
         } finally {
             api.close();
         }
+    }
+
+    @Override
+    public String getImageUrl(String key) {
+        HttpServletRequest request = getThreadLocalRequest();
+        String url = "http://";
+        url += request.getServerName();
+        url += ":" + request.getServerPort();
+        url += FETCH_SERVLET + key;
+        return url;
     }
 }

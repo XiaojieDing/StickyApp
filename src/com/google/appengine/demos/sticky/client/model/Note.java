@@ -29,6 +29,8 @@ public class Note implements Serializable {
 
     public interface Observer {
         void onUpdate(Note note);
+
+        void onImageUpdate(Note note);
     }
 
     /**
@@ -50,7 +52,7 @@ public class Note implements Serializable {
      * The text content of the note.
      */
     private String content;
-
+    private boolean hasImage;
     /**
      * The time of the most recent update. This value is always supplied by the
      * server.
@@ -75,6 +77,8 @@ public class Note implements Serializable {
     private transient boolean ownedByCurrentUser;
 
     private String comment;
+
+    private String imageUrl;
 
     /**
      * A constructor to be used on client-side only.
@@ -224,6 +228,9 @@ public class Note implements Serializable {
      */
     void initialize(Model model) {
         ownedByCurrentUser = model.getCurrentAuthor().getEmail().equals(authorEmail);
+        if (hasImage) {
+            model.getImageUrlForNote(this);
+        }
     }
 
     /**
@@ -249,6 +256,16 @@ public class Note implements Serializable {
      * @return <code>this</code>, for chaining purposes
      */
     Note update(Note note) {
+
+        if (note.hasImage) {
+            // die zeile verursacht das verschwinden der bilder nach dem ersten
+            // update
+            // TODO: brauchen wir das? die image url wird sich ja nicht mehr
+            // aendern oder?
+            // imageUrl = note.imageUrl;
+            observer.onImageUpdate(this);
+        }
+
         if (!note.getLastUpdatedAt().equals(lastUpdatedAt)) {
             key = note.key;
             surfaceKey = note.surfaceKey;
@@ -280,4 +297,21 @@ public class Note implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public boolean hasImage() {
+        return hasImage;
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
+    }
+
 }

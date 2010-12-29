@@ -15,10 +15,7 @@
 
 package com.google.appengine.demos.sticky.client;
 
-import gwtupload.client.IUploadStatus.Status;
 import gwtupload.client.IUploader;
-import gwtupload.client.PreloadedImage;
-import gwtupload.client.PreloadedImage.OnLoadPreloadedImageHandler;
 import gwtupload.client.SingleUploader;
 
 import com.google.appengine.demos.sticky.client.model.Model;
@@ -45,6 +42,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.WidgetCollection;
@@ -62,11 +61,16 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
     private class NoteView extends FlowPanel implements Note.Observer, MouseUpHandler, MouseDownHandler, MouseMoveHandler, ValueChangeHandler<String> {
         private final Note note;
 
+        private Image image = new Image();
+
         private final DivElement titleElement;
 
         private final TextArea content = new TextArea();
 
         private final TextArea comments = new TextArea();
+
+        private final SingleUploader uploader = new SingleUploader();
+        private final Hidden uploaderNoteKey = new Hidden("noteKey");
 
         // Dragging state.
         private boolean dragging;
@@ -99,29 +103,25 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
             });
 
             final FlowPanel panelImages = new FlowPanel();
-            final OnLoadPreloadedImageHandler showImage = new OnLoadPreloadedImageHandler() {
-                @Override
-                public void onLoad(PreloadedImage img) {
-                    img.setWidth("75px");
-                    panelImages.add(img);
-                }
-            };
             IUploader.OnFinishUploaderHandler onFinishUploaderHandler = new IUploader.OnFinishUploaderHandler() {
                 @Override
-                public void onFinish(IUploader uploader) {
-                    if (uploader.getStatus() == Status.SUCCESS) {
-                        new PreloadedImage(uploader.fileUrl(), showImage);
-                    }
+                public void onFinish(IUploader uiUploader) {
+                    uploader.setVisible(false);
+                    model.getImageUrlForNote(NoteView.this.note);
                 }
             };
 
-            SingleUploader uploader = new SingleUploader();
+            uploader.add(uploaderNoteKey);
+            uploader.setServletPath("/sticky/imageUpload");
             uploader.addOnFinishUploadHandler(onFinishUploaderHandler);
+            uploader.setVisible(!note.hasImage());
+            uploaderNoteKey.setValue(note.getKey());
 
             if (note.getAuthorName().equals("You")) {
                 add(uploader);
             }
 
+            panelImages.add(image);
             add(panelImages);
 
             final Button sendButton = new Button("Comment");
@@ -207,6 +207,9 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
         @Override
         public void onUpdate(Note note) {
+            if (!this.note.hasImage()) {
+                uploader.setVisible(true);
+            }
             render();
         }
 
@@ -244,6 +247,12 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
 
         private void select() {
             getElement().getStyle().setProperty("zIndex", "" + nextZIndex());
+        }
+
+        @Override
+        public void onImageUpdate(Note note) {
+            image.setUrl(note.getImageUrl());
+            render();
         }
     }
 

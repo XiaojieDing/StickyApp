@@ -93,4 +93,6 @@ public interface ServiceAsync {
     void getUserInfo(AsyncCallback<Service.UserInfoResult> callback);
 
     void changeComments(String key, String comment, AsyncCallback<Date> callback);
+
+    void getImageUrl(String key, AsyncCallback<String> callback);
 }

@@ -30,6 +30,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("service")
 public interface Service extends RemoteService {
 
+    @SuppressWarnings("serial")
+    static class ImageNotFoundException extends Exception {
+    }
+
     /**
      * An exception that is thrown by the server whenever the current user is
      * not logged in, or if the RPC requests an operation that cannot be carried
@@ -419,4 +423,6 @@ public interface Service extends RemoteService {
     UserInfoResult getUserInfo() throws AccessDeniedException;
 
     Date changeComments(String key, String comment) throws AccessDeniedException;
+
+    String getImageUrl(String key);
 }
