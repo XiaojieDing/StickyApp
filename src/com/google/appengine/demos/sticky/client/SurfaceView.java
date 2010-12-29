@@ -237,7 +237,6 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
             content.setText((noteContent == null) ? "" : noteContent);
 
             final String noteComments = note.getComment();
-            System.out.println("****** " + noteComments);
             comments.setText((noteComments == null) ? "" : noteComments);
 
             content.setReadOnly(!note.isOwnedByCurrentUser());

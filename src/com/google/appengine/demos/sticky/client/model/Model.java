@@ -45,7 +45,7 @@ public class Model {
 
         @Override
         public void execute() {
-            String comment = (note.getComment().isEmpty()) ? this.comment : note.getComment() + "\n" + this.comment;
+            String comment = (note.getComment() == null || note.getComment().isEmpty()) ? this.comment : note.getComment() + "\n" + this.comment;
             note.setComment(comment);
             api.changeComments(note.getKey(), comment, this);
         }
@@ -485,8 +485,8 @@ public class Model {
     }
 
     native static void forceApplicationReload() /*-{
-        $wnd.location.reload();
-    }-*/;
+                                                $wnd.location.reload();
+                                                }-*/;
 
     /**
      * An rpc proxy for making calls to the server.
