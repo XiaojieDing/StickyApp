@@ -35,6 +35,7 @@ import com.google.appengine.api.datastore.Blob;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.users.User;
+import com.google.appengine.demos.sticky.server.Store.Note;
 
 /**
  * An application specific Api wrapper around the {@link DatastoreService}.
@@ -200,6 +201,13 @@ public class Store {
                 return null;
             }
         }
+
+		public Note saveImage(Blob imageBlob, String noteKey) 
+		{
+			Note note = manager.getObjectById(Note.class, noteKey);
+			note.setImageData(imageBlob);
+			return manager.makePersistent(note);
+		}
     }
 
     /**
@@ -711,6 +719,7 @@ public class Store {
     }
 
     private final PersistenceManagerFactory factory;
+    private static final Store instance = new Store("transactions-optional");
 
     /**
      * Create a new Store based on a particular config.
@@ -728,5 +737,10 @@ public class Store {
      */
     public Api getApi() {
         return new Api();
+    }
+    
+    public static Store getInstance()
+    {
+    	return instance;
     }
 }

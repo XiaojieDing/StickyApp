@@ -120,6 +120,12 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
             if (note.getAuthorName().equals("You")) {
                 add(uploader);
             }
+            
+
+            if(note.hasImage())
+            { 
+            	model.getImageUrlForNote(NoteView.this.note);
+            }
 
             panelImages.add(image);
             add(panelImages);
@@ -243,6 +249,7 @@ public class SurfaceView extends FlowPanel implements Model.DataObserver {
             comments.setText((noteComments == null) ? "" : noteComments);
 
             content.setReadOnly(!note.isOwnedByCurrentUser());
+            
         }
 
         private void select() {

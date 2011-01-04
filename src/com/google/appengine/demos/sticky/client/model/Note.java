@@ -111,7 +111,10 @@ public class Note implements Serializable {
      * @param authorName
      * @param ownedByCurrentUser
      */
-    public Note(String key, int x, int y, int width, int height, String content, Date lastUpdatedAt, String authorName, String authorEmail, String comment) {
+    public Note(String key, int x, int y, int width, int height, String content, 
+    		    Date lastUpdatedAt, String authorName, String authorEmail, String comment,
+    		    boolean hasImage ) 
+    {
         assert !GWT.isClient();
         this.key = key;
         this.x = x;
@@ -123,6 +126,7 @@ public class Note implements Serializable {
         this.lastUpdatedAt = lastUpdatedAt;
         this.authorName = authorName;
         this.authorEmail = authorEmail;
+        this.hasImage = hasImage;
     }
 
     /**

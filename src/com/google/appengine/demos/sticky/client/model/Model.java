@@ -82,7 +82,7 @@ public class Model {
             System.out.println("=== GetImageUrlTask === : " + result);
             note.setImageUrl(result);
             note.setHasImage(true);
-            note.update(note);
+            note.update(note); 
             getQueue().taskSucceeded(this);
         }
 

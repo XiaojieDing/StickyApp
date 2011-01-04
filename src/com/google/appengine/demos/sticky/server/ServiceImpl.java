@@ -91,8 +91,16 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
         final Note[] clients = new Note[notes.size()];
         int i = 0;
         for (Store.Note n : notes) {
-            clients[i++] = new Note(KeyFactory.keyToString(n.getKey()), n.getX(), n.getY(), n.getWidth(), n.getHeight(), n.getContent(), n.getLastUpdatedAt(), n.getAuthorName(), n.getAuthorEmail(),
-                    n.getComment());
+        	if(n.getImageData()==null)
+        	{
+        		clients[i++] = new Note(KeyFactory.keyToString(n.getKey()), n.getX(), n.getY(), n.getWidth(), n.getHeight(), n.getContent(), n.getLastUpdatedAt(), n.getAuthorName(), n.getAuthorEmail(),
+                        n.getComment(), false);
+        	}else
+        	{
+        		clients[i++] = new Note(KeyFactory.keyToString(n.getKey()), n.getX(), n.getY(), n.getWidth(), n.getHeight(), n.getContent(), n.getLastUpdatedAt(), n.getAuthorName(), n.getAuthorEmail(),
+                        n.getComment(), true);
+        	}
+            
         }
         return clients;
     }
@@ -121,7 +129,8 @@ public class ServiceImpl extends RemoteServiceServlet implements Service {
     /**
      * A reference to the data store.
      */
-    public final static Store store = new Store("transactions-optional");
+//    public final static Store store = new Store("transactions-optional");
+     public final static Store store = Store.getInstance();
 
     /**
      * A reference to a cache service.
